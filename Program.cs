@@ -12,7 +12,7 @@ app.MapGet("/", async (context) =>
     try
     {
         Console.WriteLine($"QueryString = {context.Request.QueryString}");
-        log += $"QueryString = {context.Request.QueryString}<br>\n";
+        log += $"QueryString = {context.Request.QueryString}\n\n";
         
         var clientId = context.Request.Query["clientId"];
         var clientSecret = context.Request.Query["clientSecret"];
@@ -26,11 +26,11 @@ app.MapGet("/", async (context) =>
         Console.WriteLine($"code = {code}");
         Console.WriteLine($"fileId = {fileId}");
         
-        log += $"clientId = {clientId}<br>\n";
-        log += $"clientSecret = {clientSecret}<br>\n";
-        log += $"redirect = {redirect}<br>\n";
-        log += $"code = {code}<br>\n";
-        log += $"fileId = {fileId}<br>\n";
+        log += $"clientId = {clientId}\n\n";
+        log += $"clientSecret = {clientSecret}\n\n";
+        log += $"redirect = {redirect}\n\n";
+        log += $"code = {code}\n\n";
+        log += $"fileId = {fileId}\n\n";
         
         var redirectUri = new Uri(redirect);
         var config = new BoxConfigBuilder(clientId, clientSecret, redirectUri).Build();
@@ -44,27 +44,27 @@ app.MapGet("/", async (context) =>
         var meJson = JsonSerializer.Serialize(me);
         Console.WriteLine(meJson);
         
-        log += $"user = <br><pre>{meJson}</pre><br>\n";
+        log += $"user = \n\n{meJson}\n\n";
         
         // ファイル更新 1
-        var now = DateTime.Now.ToLongTimeString();
+        var now = DateTime.Now.ToShortTimeString();
         var param = new BoxFileRequest()
         {
             Id = fileId,
-            // Tags = new string []{ "TrustSeal" },
+            Tags = new string []{ $"T{now}" },
             Name = now
         };
         var file = await client.FilesManager.UpdateInformationAsync(param);
         var fileJson = JsonSerializer.Serialize(file);
         Console.WriteLine(fileJson);
         
-        log += $"file = <br><pre>{fileJson}</pre><br>\n";
+        log += $"file = \n\n{fileJson}\n\n";
     }
     catch (Exception e)
     {
         Console.WriteLine(e);
-        log += "<b>Exception</b><br>\n";
-        log += e;
+        log += "##### Exception #####\n\n";
+        log += e.ToString();
     }
 
     await context.Response.WriteAsync(log);
